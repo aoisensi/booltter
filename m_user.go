@@ -40,6 +40,7 @@ func createUserFromToken(token, secret string) (*mUser, error) {
     }
     now := time.Now()
     user := &mUser{
+        OID: bson.NewObjectId(),
         ID: self.Id,
         Name: self.ScreenName,
         TwitterToken: token,
