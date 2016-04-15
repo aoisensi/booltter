@@ -2,6 +2,7 @@ package main
 
 import (
     "os"
+    "fmt"
     "github.com/golang/glog"
     "github.com/ChimeraCoder/anaconda"
     "github.com/gin-gonic/gin"
@@ -72,7 +73,8 @@ func main() {
         
         
     })
-    r.Run()
+    bind := fmt.Sprintf("%s:%s", os.Getenv("OPENSHIFT_GO_IP"), os.Getenv("OPENSHIFT_GO_PORT"))
+    r.Run(bind)
 }
 
 func signin(session sessions.Session, token *oauth.Credentials) error {
