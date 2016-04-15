@@ -37,7 +37,7 @@ func main() {
             return
         }
         
-        session.Set("credentials", cre)
+        session.Set("credentials", *cre)
         session.Save()
         ctx.Redirect(303, url)
         return
@@ -45,14 +45,15 @@ func main() {
     
     r.GET("/signin/callback", func(ctx *gin.Context) {
         session := sessions.Default(ctx)
-        cre := session.Get("credentials").(*oauth.Credentials)
+        cre := session.Get("credentials")
         if cre != nil {
             ctx.String(500, "callback failed.")
             return
         }
         
         verifier := ctx.Request.URL.Query().Get("oauth_verifier")
-        cred, _, err := anaconda.GetCredentials(cre, verifier)
+        c := cre.(oauth.Credentials)
+        cred, _, err := anaconda.GetCredentials(&c, verifier)
         defer func() {
             session.Delete("credentials")
             session.Save()
