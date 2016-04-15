@@ -3,6 +3,7 @@ package main
 import (
     "os"
     "fmt"
+    "flag"
     "github.com/golang/glog"
     "github.com/ChimeraCoder/anaconda"
     "github.com/gin-gonic/gin"
@@ -11,6 +12,7 @@ import (
 )
 
 func main() {
+    flag.Parse()
     r := gin.Default()
     store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
     r.Use(sessions.Sessions("session", store))
