@@ -38,7 +38,10 @@ func main() {
         }
         
         session.Set("credentials", *cre)
-        session.Save()
+        if err := session.Save(); err != nil {
+            glog.Warning(err)
+        }
+        
         ctx.Redirect(303, url)
         return
     })
@@ -56,7 +59,9 @@ func main() {
         cred, _, err := anaconda.GetCredentials(&c, verifier)
         defer func() {
             session.Delete("credentials")
-            session.Save()
+            if err := session.Save(); err != nil {
+                glog.Warning(err)
+            }
         }()
         if err != nil {
             ctx.String(500, "callback failed.")
