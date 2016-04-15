@@ -5,7 +5,7 @@ import (
 
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/golang/glog"
-	"labix.org/v2/mgo"
+	"gopkg.in/mgo.v2"
 )
 
 var db *mgo.Database

@@ -5,7 +5,7 @@ import (
     "errors"
 
 	"github.com/ChimeraCoder/anaconda"
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var slateTime = time.Hour
