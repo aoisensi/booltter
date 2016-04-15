@@ -39,7 +39,8 @@ func main() {
             return
         }
         
-        session.Set("credentials", *cre)
+        session.Set("credentials_token", cre.Token)
+        session.Set("credentials_secret", cre.Secret)
         if err := session.Save(); err != nil {
             glog.Warning(err)
         }
@@ -50,15 +51,23 @@ func main() {
     
     r.GET("/signin/callback", func(ctx *gin.Context) {
         session := sessions.Default(ctx)
-        cre := session.Get("credentials")
-        if cre != nil {
+        token, ok := session.Get("credentials_token").(string)
+        if !ok {
+            ctx.String(500, "callback failed.")
+            return
+        }
+        secret, ok := session.Get("credentials_secret").(string)
+        if !ok {
             ctx.String(500, "callback failed.")
             return
         }
         
+        cre := &oauth.Credentials{
+            Token: token,
+            Secret: secret,
+        }
         verifier := ctx.Request.URL.Query().Get("oauth_verifier")
-        c := cre.(oauth.Credentials)
-        cred, _, err := anaconda.GetCredentials(&c, verifier)
+        cred, _, err := anaconda.GetCredentials(cre, verifier)
         defer func() {
             session.Delete("credentials")
             if err := session.Save(); err != nil {
