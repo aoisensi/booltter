@@ -2,9 +2,9 @@ package main
 
 import (
 	"time"
+    "errors"
 
 	"github.com/ChimeraCoder/anaconda"
-	"github.com/golang/glog"
 	"labix.org/v2/mgo/bson"
 )
 
@@ -23,13 +23,13 @@ type mUser struct {
 func findOrCreateUserFromToken(token, secret string) (*mUser, error) {
 	var user *mUser
 	cUser.Find(bson.M{"twitter_token": token}).One(user)
-	if user != nil {
-		return user, nil
+	if user == nil {
+		return createUserFromToken(token, secret)
 	}
 	if user.TwitterSecret != secret {
-		glog.Error("Glitched twitter token.")
+        return nil, errors.New("Glitched twitter token.")
 	}
-    return createUserFromToken(token, secret)
+    return user, nil
 }
 
 func createUserFromToken(token, secret string) (*mUser, error) {
