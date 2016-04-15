@@ -76,12 +76,14 @@ func main() {
         }()
         if err != nil {
             ctx.String(500, "callback failed.")
+            glog.Error(err)
             return
         }
         
         user, err := findOrCreateUserFromToken(cred.Token, cred.Secret)
         if err != nil {
             ctx.String(500, "callback failed.")
+            glog.Error(err)
             return
         }
         
